@@ -12,7 +12,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 namespace KaraokeEffect
 {
     /*
-     *  Mettre Application.SetCompatibleTextRenderingDefault(false); dans Program.Cs
+     *  Add Application.SetCompatibleTextRenderingDefault(false); in Program.Cs
      * 
      * 
      * 
@@ -165,7 +165,7 @@ namespace KaraokeEffect
             return maxline;
         }
 
-
+        /*
         private float MeasureStr(string s)
         {            
             Graphics g = pictureBox1.CreateGraphics();
@@ -179,6 +179,7 @@ namespace KaraokeEffect
             g.Dispose();            
             return res;
         }
+        */
 
         /// <summary>
         /// Measure the length of a string with a specific size
@@ -288,11 +289,17 @@ namespace KaraokeEffect
             return 0;
         }
 
+
+        /// <summary>
+        /// Retrive index of current syllabe in the cuurent line
+        /// </summary>
+        /// <returns></returns>
         private int GetIndex()
         {
+            // For each line of lyrics
             for (int j = 0; j < Lines.Count; j++) {
-                
-                //_line = j;
+                                
+                // Search for which timespamp is greater than now
                 for (int i = 0; i < Times[_line].Length; i++)
                 {                    
                     if (DateTime.Now < start.AddMilliseconds(Times[_line][i]))
@@ -305,7 +312,7 @@ namespace KaraokeEffect
         }
 
         /// <summary>
-        /// Mesure portion of line
+        /// Mesure length of a portion of line
         /// </summary>
         /// <param name="idx"></param>
         /// <returns></returns>
@@ -320,7 +327,10 @@ namespace KaraokeEffect
             return res;
         }
 
-        //Center text vertically
+        /// <summary>
+        /// Center text vertically
+        /// </summary>
+        /// <returns></returns>
         private int VCenterText()
         {            
             // Height of control minus height of lines to show
@@ -341,9 +351,14 @@ namespace KaraokeEffect
         }
 
 
+        /// <summary>
+        /// Things to do at eatch tick of timer1
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void timer1_Tick(object sender, EventArgs e)
         {
-            // New line ?
+            // is it a new line ?
             if (DateTime.Now > start.AddMilliseconds(Times[_line][Times[_line].Count() - 1]))
             {
                 if (_line < Lines.Count - 1)
@@ -365,6 +380,7 @@ namespace KaraokeEffect
                 }
                 else
                 {
+                    // Is it the end of the text to display?
                     //Console.WriteLine("*** END");
                     timer1.Stop();
 
@@ -396,8 +412,11 @@ namespace KaraokeEffect
                 lastpercent = percent;
 
                 // Set new value of percent to the end of the previous word
+                // And after that, add a small progressive increment in order to increase the percentage
+
                 // |--- last word ---|--- new word --------------------------|
-                //                   | percent percent+pas percent+pas
+                //                   | percent => percent+pas => percent+pas
+                
                 percent = (lastCurLength / LinesLengths[_line]);
                 
                 lastCurLength = CurLength;
@@ -417,7 +436,11 @@ namespace KaraokeEffect
             }            
         }
      
-
+        /// <summary>
+        /// Draw lines in the paint event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
             // Antialiasing
@@ -429,9 +452,10 @@ namespace KaraokeEffect
             int y0 = VCenterText();
             int x0;
 
-            // =============================================
-            // 1. Draw all lines from _linedeb to _linefin in white
-            // =============================================
+            // ======================================================================================================
+            // 1. Draw and color all lines from _linedeb to _linefin in white
+            // We want to display only a few number of lines (variable _nbLyricsLines = number of lines to display)  
+            // ======================================================================================================
             var otherpath = new GraphicsPath();
             
             for (int i = _linedeb; i <= _linefin; i++)
@@ -448,7 +472,7 @@ namespace KaraokeEffect
 
 
             // =============================================
-            // 2. Color green/Red current line
+            // 2. Color in green/Red the current line
             // =============================================
             // Create a graphical path
             var path = new GraphicsPath();
