@@ -77,19 +77,7 @@ namespace KaraokeEffect
             sf = new StringFormat(StringFormat.GenericTypographic) { FormatFlags = StringFormatFlags.MeasureTrailingSpaces };
             emSize = 40;
             _karaokeFont = new Font( "Comic Sans MS", 60, FontStyle.Regular, GraphicsUnit.Pixel);
-            //_karaokeFont = new Font("Comic Sans MS", emSize, FontStyle.Regular, GraphicsUnit.Point);
-
-            // Vertical distance between lines
-            _lineHeight = (int)(1.5 * emSize);
-            // Height of the full song
-            _linesHeight = _nbLyricsLines * _lineHeight;
-
-
-            // MeasureStr("Galappagos") = 306
-            // 306 / 0.01 = 30600
-            // Temps = 30600 * 10 = 306 000 millisecondes
-
-
+           
             Init();
             
             // Biggest line
@@ -615,7 +603,8 @@ namespace KaraokeEffect
                     _karaokeFont = new Font(_karaokeFont.FontFamily, emSize, FontStyle.Regular, GraphicsUnit.Pixel);
 
                     // Vertical distance between lines
-                    _lineHeight = (int)emSize + 10;
+                    //_lineHeight = (int)emSize + 10;
+                    _lineHeight = (int)(1.2*emSize);
                     // Height of the full song
                     _linesHeight = _nbLyricsLines * _lineHeight;
 
