@@ -98,6 +98,7 @@
             // karaokeEffect1
             // 
             this.karaokeEffect1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.karaokeEffect1.Image = global::TestKaraokeEffect.Properties.Resources.background;
             this.karaokeEffect1.KaraokeFont = new System.Drawing.Font("Comic Sans MS", 56F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.karaokeEffect1.Location = new System.Drawing.Point(0, 0);
             this.karaokeEffect1.Name = "karaokeEffect1";
@@ -106,7 +107,9 @@
             this.karaokeEffect1.Size = new System.Drawing.Size(689, 282);
             this.karaokeEffect1.StepPercent = 0.01F;
             this.karaokeEffect1.TabIndex = 2;
-            this.karaokeEffect1.TimerInterval = 10;
+            this.karaokeEffect1.TxtAlreadyPlayedColor = System.Drawing.Color.Green;
+            this.karaokeEffect1.TxtBeingPlayedColor = System.Drawing.Color.Red;
+            this.karaokeEffect1.TxtNotYetPlayedColor = System.Drawing.Color.White;
             // 
             // timer1
             // 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
@@ -61,6 +62,7 @@ namespace lyrics
         /// <summary>
         /// Player position => highlight lyrics at this position
         /// </summary>
+        [Description("Position")]
         public int Position
         {
             get { return _position; }
@@ -87,15 +89,10 @@ namespace lyrics
                 Init();              
             }
         }
-       
-        private int _timerinterval = 10;
-        public int TimerInterval
-        {
-            get { return _timerinterval; }
-            set { _timerinterval = value; }
-        }
+      
 
         private float _steppercent = 0.01F;
+        [Description("Increment to display a syllable progressively")]
         public float StepPercent
         {
             get { return _steppercent; }
@@ -103,20 +100,24 @@ namespace lyrics
         }
 
         private int _nbLyricsLines = 3;
+        [Description("The number of lines to display")]
         public int nbLyricsLines
         {
             get { return _nbLyricsLines; }
             set { _nbLyricsLines = value; }
         }
-        
+               
         private Font _karaokeFont;
+        [Description("The font of the component")]
         public Font KaraokeFont
         {
             get { return _karaokeFont; }
             set { _karaokeFont = value; }
         }
 
+
         private Color _backcolor = Color.Black;
+        [Description("The background color of the component")]
         public override Color BackColor
         {
             get { return _backcolor; }
@@ -128,6 +129,67 @@ namespace lyrics
         }
 
         
+        private Color _AlreadyPlayedColor = Color.Green;
+        [Description("Colour of text already played")]
+        public Color TxtAlreadyPlayedColor
+        {
+            get { return _AlreadyPlayedColor; }
+            set 
+            { 
+                _AlreadyPlayedColor = value; 
+                pBox.Invalidate();
+            }
+        }
+
+        private Color _BeingPlayedColor = Color.Red;
+        [Description("Colour of text being played")]
+        public Color TxtBeingPlayedColor
+        {
+            get { return _BeingPlayedColor; }
+            set {
+                pBox.Invalidate();
+                _BeingPlayedColor = value; 
+            }
+        }
+
+        private Color _NotYetPlayedColor = Color.White;
+        [Description("Colour of text not yet played")]
+        public Color TxtNotYetPlayedColor
+        {
+            get { return _NotYetPlayedColor; }
+            set 
+            { 
+                _NotYetPlayedColor = value;
+                pBox.Invalidate();
+            }
+        }
+
+
+        private Image m_CurrentImage;
+        [Description("Background image behind the text")]
+        public Image Image
+        {
+            get { return m_CurrentImage; }
+            set 
+            { 
+                m_CurrentImage = value;
+                try
+                {
+                    pBox.BackgroundImage = m_CurrentImage;
+                    pBox.BackgroundImageLayout = ImageLayout.Stretch;
+                    //pBox.Image = value;
+                    pBox.Invalidate();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Karaboss", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+        //public override Image BackgroundImage { get => base.BackgroundImage; set => base.BackgroundImage = value; }
+
+
+
         #endregion properties
 
         /// <summary>
@@ -157,6 +219,7 @@ namespace lyrics
             
             _steppercent = 0.01F;
 
+            // Add new line "Hello World"
             SyncLyrics = new List<List<SyncText>>();
             SyncLine = new List<SyncText> { new SyncText(0, "Hello"), new SyncText(500, " World") };                        
             SyncLyrics.Add(SyncLine);

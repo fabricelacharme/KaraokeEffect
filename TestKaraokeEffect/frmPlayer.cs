@@ -46,9 +46,12 @@ namespace TestKaraokeEffect
             SyncLine = new List<SyncText> { new SyncText(16000, "Que"), new SyncText(16500, " le"), new SyncText(17000, " bon"), new SyncText(17500, "heur"), new SyncText(18000, " c'est"), new SyncText(18500, " d'a"), new SyncText(19000, "voir") };
             SyncLyrics.Add(SyncLine);
 
-            List<SyncText> l = SyncLyrics[SyncLyrics.Count - 1];
-            SyncText st = l[l.Count - 1];
-            Duration = (int)st.time;
+            // Duration = last item of lyrics
+            Duration = (int)SyncLyrics[SyncLyrics.Count - 1][SyncLine.Count - 1].time;
+
+            //List<SyncText> l = SyncLyrics[SyncLyrics.Count - 1];
+            //SyncText st = l[l.Count - 1];
+            //Duration = (int)st.time;
 
             trackBar1.Minimum = 0;
             trackBar1.Maximum = Duration;

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // l'ensemble d'attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
 // associées à un assembly.
 [assembly: AssemblyTitle("KaraokeEffect")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Karaoke text effect")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Fabrice Lacharme")]
 [assembly: AssemblyProduct("KaraokeEffect")]
-[assembly: AssemblyCopyright("Copyright ©  2025")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright © Fabrice Lacharme 2025")]
+[assembly: AssemblyTrademark("Fabrice Lacharme")]
 [assembly: AssemblyCulture("")]
 
 // L'affectation de la valeur false à ComVisible rend les types invisibles dans cet assembly
