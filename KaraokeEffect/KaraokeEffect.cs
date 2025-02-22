@@ -384,7 +384,7 @@ namespace lyrics
         private void KaraokeEffect_Resize(object sender, EventArgs e)
         {
             // Increase _steppercent if Width increase
-            _steppercent = _steppercent * Width/500;
+            //_steppercent = _steppercent * Width/500;
 
             AjustText(_biggestLine);
             pBox.Invalidate();
@@ -672,13 +672,56 @@ namespace lyrics
         #endregion ajust text
 
 
+     
+                      
+
+        #region start stop
+
+        // Start Display lyrics
+        public void Start()
+        {
+            _line = 0;
+            percent = 0;
+            lastpercent = 0;
+            index = 0;
+            lastindex = -1;
+            lastCurLength = 0;
+            CurLength = 0;
+
+        }
+
+        public void Stop()
+        {
+            _line = 0;
+            _FirstLine = 0;
+            _LastLine = SetLastLineToShow(_FirstLine, _lines, _nbLyricsLines);
+
+            percent = 0;
+            lastpercent = 0;
+            index = 0;
+            lastindex = -1;
+            lastCurLength = 0;
+            CurLength = 0;
+            pBox.Invalidate();
+        }
+
+        /// <summary>
+        ///  player position
+        /// </summary>
+        /// <param name="pos"></param>
+        public void SetPos(double ms)
+        {            
+            SetPosition((int)ms);            
+
+        }
+
         private void SetPosition(int pos)
         {
             // line changed by trackbar            
             int line = GetLine(pos);
 
             // If pos is greater than last position of currentline
-            if (line!= _line || pos > Times[_line][Times[_line].Count() - 1])
+            if (line != _line || pos > Times[_line][Times[_line].Count() - 1])
             {
                 if (_line < Lines.Count - 1)
                 {
@@ -691,7 +734,7 @@ namespace lyrics
                     CurLength = 0;
                     _line = GetLine(pos);
                     _FirstLine = _line;
-                    _LastLine = SetLastLineToShow(_FirstLine, _lines, _nbLyricsLines);                    
+                    _LastLine = SetLastLineToShow(_FirstLine, _lines, _nbLyricsLines);
                 }
                 else
                 {
@@ -733,6 +776,12 @@ namespace lyrics
 
                 percent = (lastCurLength / LinesLengths[_line]);
 
+                // Caculate distance between LastCurLength et CurLength
+                float d = (float) (CurLength - lastCurLength);
+                // Set 3000 occurences to reach the end 
+                _steppercent = d / 3000;
+                
+
                 lastCurLength = CurLength;
                 lastindex = index;
                 pBox.Invalidate();
@@ -748,47 +797,6 @@ namespace lyrics
                 }
                 pBox.Invalidate();
             }
-
-        }
-                      
-
-        #region start stop
-
-        // Start Display lyrics
-        public void Start()
-        {
-            _line = 0;
-            percent = 0;
-            lastpercent = 0;
-            index = 0;
-            lastindex = -1;
-            lastCurLength = 0;
-            CurLength = 0;
-
-        }
-
-        public void Stop()
-        {
-            _line = 0;
-            _FirstLine = 0;
-            _LastLine = SetLastLineToShow(_FirstLine, _lines, _nbLyricsLines);
-
-            percent = 0;
-            lastpercent = 0;
-            index = 0;
-            lastindex = -1;
-            lastCurLength = 0;
-            CurLength = 0;
-            pBox.Invalidate();
-        }
-
-        /// <summary>
-        ///  player position
-        /// </summary>
-        /// <param name="pos"></param>
-        public void SetPos(double ms)
-        {            
-            SetPosition((int)ms);            
 
         }
 
