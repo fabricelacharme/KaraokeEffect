@@ -14,7 +14,19 @@ using static System.Windows.Forms.LinkLabel;
 
 namespace lyrics
 {
-   
+
+    public struct SyncText
+    {
+        public long time;
+        public string lyric;
+
+        public SyncText(long time, string lyric)
+        {
+            this.time = time;
+            this.lyric = lyric;
+        }
+    }
+
     public partial class KaraokeEffect : UserControl
     {
 
@@ -27,8 +39,7 @@ namespace lyrics
         private List<long[]> Times;
         private string[] Texts;
         private float[] LinesLengths;        
-
-        private DateTime start;
+        
         private int index = 0;
         private int lastindex = -1;        
         private float CurLength;
@@ -51,20 +62,38 @@ namespace lyrics
 
 
         #region properties
-
-        private List<(long[] Time, string[] Lyric)> _lyrics; 
-        public List<(long[] Time, string[] Lyric)> Lyrics 
-        { get { return _lyrics; } 
-          set 
-            {  
-                _lyrics = value;
-                Init();
-                // Biggest line
-                _biggestLine = GetBiggestLine();
-                AjustText(_biggestLine);
-            }     
+        
+        private int _position = 0;
+        /// <summary>
+        /// Player position => highlight lyrics at this position
+        /// </summary>
+        public int Position
+        {
+            get { return _position; }
+            set { _position = value; }
         }
 
+
+        private List<SyncText> _SyncLine;
+        public List<SyncText> SyncLine
+        {
+            get { return _SyncLine; }
+            set { _SyncLine = value; }
+        }
+
+        private List<List<SyncText>> _SyncLyrics;
+        public List<List<SyncText>> SyncLyrics
+        {
+            get { return _SyncLyrics; }
+            set 
+            { 
+                if (value == null) return;
+
+                _SyncLyrics = value; 
+                Init();              
+            }
+        }
+       
         private int _timerinterval = 10;
         public int TimerInterval
         {
@@ -123,12 +152,7 @@ namespace lyrics
             SetDefaultValues();
 
             Init();
-            _LastLine = SetLastLineToShow(_FirstLine, _lines, _nbLyricsLines);
-            
-            // Biggest line
-            _biggestLine = GetBiggestLine();
-            AjustText(_biggestLine);
-
+                       
         }
 
         private void SetDefaultValues()
@@ -136,59 +160,73 @@ namespace lyrics
             sf = new StringFormat(StringFormat.GenericTypographic) { FormatFlags = StringFormatFlags.MeasureTrailingSpaces };
             sf.Alignment = StringAlignment.Center;
             _karaokeFont = new Font("Comic Sans MS", emSize, FontStyle.Regular, GraphicsUnit.Pixel);
-
-            Ttimer.Interval = _timerinterval;  // 10 milliseconds
+            
             _steppercent = 0.01F;
+
+            SyncLyrics = new List<List<SyncText>>();
+            SyncLine = new List<SyncText> { new SyncText(0, "Hello"), new SyncText(500, " World") };                        
+            SyncLyrics.Add(SyncLine);
+            /*
+            SyncLine = new List<SyncText> { new SyncText(1000, "***"), new SyncText(1500, " ***") };
+            SyncLyrics.Add(SyncLine);
+            SyncLine = new List<SyncText> { new SyncText(2000, "*") };
+            SyncLyrics.Add(SyncLine);
+            */
         }
 
+
         private void Init()
-        {
+        {            
             Lines = new List<string[]>();
+            Times = new List<long[]>();
+            
+            List<SyncText> syncline = new List<SyncText>();
+            string[] s;
+            long[] t;
 
-            string[] Line0 = { "Oh", " la", " la", " la", " vie", " en", " rose" };
-            string[] Line1 = { "Le", " rose", " qu'on", " nous", " pro", "pose" };
-            string[] Line2 = { "D'a", "voir", " les", " quan", "ti", "tés", " d'choses" };
-            string[] Line3 = { "Qui", " donnent", " en", "vie", " d'au", "tres", " choses" };
-            string[] Line4 = { "Aie", " on", " nous", " fait", " croire" };
+            for (int i = 0; i < _SyncLyrics.Count; i++)
+            {
+                syncline = _SyncLyrics[i];
+                t = new long[syncline.Count];
+                s = new string[syncline.Count];
 
-            Lines.Add(Line0);
-            Lines.Add(Line1);
-            Lines.Add(Line2);
-            Lines.Add(Line3);
-            Lines.Add(Line4);
-
-            Lines.Add(new string[] { " " }); // Add a false line at the end
-
-            Times = new List<long[]>(Lines.Count);
+                for (int j = 0; j < syncline.Count; j++ )
+                {
+                    t[j] = syncline[j].time;
+                    s[j] = syncline[j].lyric;
+                }
+                Times.Add(t);
+                Lines.Add(s);                
+            }
+                          
+            
+            _lines = Lines.Count;
+            
+            string[] line;
+            string Tx;
             Texts = new string[Lines.Count];
             LinesLengths = new float[Lines.Count];
 
-            _lines = Lines.Count;
-            
-            long[] time;
-            string[] line;
-            string Tx;
-            int ticks = 0;
-
-            for (int i = 0; i < _lines; i++)
+            for (int i = 0; i < Lines.Count; i++)
             {
                 line = Lines[i];
                 Tx = string.Empty;
-                time = new long[line.Length];
 
                 for (int j = 0; j < line.Length; j++)
                 {
                     Tx += line[j];
-                    ticks += 700;
-                    time[j] = ticks;
                 }
-                Texts[i] = Tx;
-                //LinesLengths[i] = MeasureLine(i);
-                Times.Add(time);
+                Texts[i] = Tx;                
             }
+
+            // Biggest line
+            _biggestLine = GetBiggestLine();
+            AjustText(_biggestLine);
+
+            _LastLine = SetLastLineToShow(_FirstLine, _lines, _nbLyricsLines);
+
         }
-        
-     
+
         /// <summary>
         /// Determine the last line that can be displayed according to number of lines, position  of first line
         /// and how many lines we xant to display
@@ -485,15 +523,17 @@ namespace lyrics
             }
         }
 
-        /// <summary>
-        /// Retrieve which line for now
-        /// </summary>
-        /// <returns></returns>
-        private int GetLine()
+        
+      /// <summary>
+      /// Retrieve which line for pos
+      /// </summary>
+      /// <param name="pos"></param>
+      /// <returns></returns>
+        private int GetLine(int pos)
         {
             for (int i = 0; i < Lines.Count; i++)
             {
-                if (DateTime.Now < start.AddMilliseconds(Times[i][Times[i].Count() - 1]))
+                if (pos < Times[i][Times[i].Count() - 1])
                 {
                     return i;
                 }
@@ -503,18 +543,18 @@ namespace lyrics
 
 
         /// <summary>
-        /// Retrive index of current syllabe in the cuurent line
+        /// Retrive index of current syllabe in the current line
         /// </summary>
-        /// <returns></returns>
-        private int GetIndex()
+        /// <returns></returns>       
+        private int GetIndex(int pos)
         {
             // For each line of lyrics
             for (int j = 0; j < Lines.Count; j++)
             {
-                // Search for which timespamp is greater than now
+                // Search for which timespamp is greater than pos
                 for (int i = 0; i < Times[_line].Length; i++)
                 {
-                    if (DateTime.Now < start.AddMilliseconds(Times[_line][i]))
+                    if (pos < Times[_line][i])
                     {
                         return i + 1;
                     }
@@ -522,6 +562,7 @@ namespace lyrics
             }
             return Lines.Count - 1;
         }
+
 
         /// <summary>
         /// Mesure length of a portion of line
@@ -558,40 +599,36 @@ namespace lyrics
         {            
             int res = -(int)_karaokeFont.Size / 2 + (pBox.ClientSize.Width - (int)MeasureString(s, _karaokeFont.Size)) / 2;
             return res > 0 ? res : 0;
-        }
-
-        #region Timer
-        private void Ttimer_Tick(object sender, EventArgs e)
+        }      
+        
+        private void SetPosition(int pos)
         {
-            // is it a new line ?
-            if (DateTime.Now > start.AddMilliseconds(Times[_line][Times[_line].Count() - 1]))
+            // line changed by trackbar            
+            int line = GetLine(pos);
+
+            // If pos is greater than last position of currentline
+            if (line!= _line || pos > Times[_line][Times[_line].Count() - 1])
             {
                 if (_line < Lines.Count - 1)
                 {
                     //Console.WriteLine("*** New line");
-                    Ttimer.Stop();
                     percent = 0;
                     lastpercent = 0;
                     index = 0;
                     lastindex = -1;
                     lastCurLength = 0;
                     CurLength = 0;
-                    _line = GetLine();
-
+                    _line = GetLine(pos);
                     _FirstLine = _line;
-                    SetLastLineToShow(_FirstLine, _lines, _nbLyricsLines);
-                    Ttimer.Start();
-
+                    _LastLine = SetLastLineToShow(_FirstLine, _lines, _nbLyricsLines);                    
                 }
                 else
                 {
                     // Is it the end of the text to display?
-                    //Console.WriteLine("*** END");
-                    Ttimer.Stop();
-
+                    //Console.WriteLine("*** END");                    
                     _line = 0;
-                    _FirstLine = _line;
-                    SetLastLineToShow(_FirstLine, _lines, _nbLyricsLines);
+                    _FirstLine = 0;
+                    _LastLine = SetLastLineToShow(_FirstLine, _lines, _nbLyricsLines);
 
                     percent = 0;
                     lastpercent = 0;
@@ -602,10 +639,11 @@ namespace lyrics
                     pBox.Invalidate();
                     return;
                 }
+
             }
 
             // Search index of lyric to play
-            index = GetIndex();
+            index = GetIndex(pos);
 
             // Length of partial line
             CurLength = GetCurLength(index);
@@ -639,9 +677,9 @@ namespace lyrics
                 }
                 pBox.Invalidate();
             }
-        }
-        #endregion Timer
 
+        }
+                      
 
         #region start stop
 
@@ -656,8 +694,31 @@ namespace lyrics
             lastCurLength = 0;
             CurLength = 0;
 
-            start = DateTime.Now;
-            Ttimer.Start();
+        }
+
+        public void Stop()
+        {
+            _line = 0;
+            _FirstLine = 0;
+            _LastLine = SetLastLineToShow(_FirstLine, _lines, _nbLyricsLines);
+
+            percent = 0;
+            lastpercent = 0;
+            index = 0;
+            lastindex = -1;
+            lastCurLength = 0;
+            CurLength = 0;
+            pBox.Invalidate();
+        }
+
+        /// <summary>
+        ///  player position
+        /// </summary>
+        /// <param name="pos"></param>
+        public void SetPos(double ms)
+        {            
+            SetPosition((int)ms);            
+
         }
 
         #endregion start stop

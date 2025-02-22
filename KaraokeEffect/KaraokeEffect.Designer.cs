@@ -28,9 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.pBox = new System.Windows.Forms.PictureBox();
-            this.Ttimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -43,10 +41,6 @@
             this.pBox.TabIndex = 0;
             this.pBox.TabStop = false;
             this.pBox.Paint += new System.Windows.Forms.PaintEventHandler(this.pBox_Paint);
-            // 
-            // Ttimer
-            // 
-            this.Ttimer.Tick += new System.EventHandler(this.Ttimer_Tick);
             // 
             // KaraokeEffect
             // 
@@ -64,6 +58,5 @@
         #endregion
 
         private System.Windows.Forms.PictureBox pBox;
-        private System.Windows.Forms.Timer Ttimer;
     }
 }
