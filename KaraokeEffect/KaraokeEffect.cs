@@ -526,7 +526,7 @@ namespace lyrics
             {
                 if (pos < Times[i][Times[i].Count() - 1])
                 {
-                    return i;
+                    return i;                                        
                 }
             }
             return 0;
@@ -547,7 +547,8 @@ namespace lyrics
                 {
                     if (pos < Times[_line][i])
                     {
-                        return i + 1;
+                        //return i + 1;
+                        return i;
                     }
                 }
             }
