@@ -25,8 +25,10 @@ namespace TestKaraokeEffect
             InitializeComponent();
             Init();
 
+            timer1.Interval = 10;
+
             karaokeEffect1.nbLyricsLines = 3;
-            karaokeEffect1.StepPercent = 0.01F;
+            //karaokeEffect1.StepPercent = 0.01F;
             karaokeEffect1.SyncLyrics = SyncLyrics;
         }
 
@@ -35,23 +37,19 @@ namespace TestKaraokeEffect
         {
             SyncLine = new List<SyncText> { new SyncText(0, "Oh"), new SyncText(500, " la"), new SyncText(1000, " la"), new SyncText(1500, " la"), new SyncText(2000, " vie"), new SyncText(2500, " en"), new SyncText(3000, " rose") };
             SyncLyrics.Add(SyncLine);
-            SyncLine = new List<SyncText> { new SyncText(3500, "Le"), new SyncText(4000, " rose"), new SyncText(4500, " qu'on"), new SyncText(5000, " nous"), new SyncText(5500, " pro"), new SyncText(6000, "pose") };
+            SyncLine = new List<SyncText> { new SyncText(4000, "Le"), new SyncText(4500, " rose"), new SyncText(5000, " qu'on"), new SyncText(5500, " nous"), new SyncText(6000, " pro"), new SyncText(6500, "pose") };
             SyncLyrics.Add(SyncLine);
-            SyncLine = new List<SyncText> { new SyncText(6500, "D'a"), new SyncText(7000, "voir"), new SyncText(7500, " les"), new SyncText(8000, " quan"), new SyncText(8500, "ti"), new SyncText(9000, "tés"), new SyncText(9500, " d'choses") };
+            SyncLine = new List<SyncText> { new SyncText(7500, "D'a"), new SyncText(8000, "voir"), new SyncText(8500, " les"), new SyncText(9000, " quan"), new SyncText(9500, "ti"), new SyncText(10000, "tés"), new SyncText(10500, " d'choses") };
             SyncLyrics.Add(SyncLine);
-            SyncLine = new List<SyncText> { new SyncText(10000, "Qui"), new SyncText(10500, " donnent"), new SyncText(11000, " en"), new SyncText(11500, "vie"), new SyncText(12000, " d'au"), new SyncText(12500, "tres"), new SyncText(13000, " choses") };
+            SyncLine = new List<SyncText> { new SyncText(11500, "Qui"), new SyncText(12000, " donnent"), new SyncText(12500, " en"), new SyncText(13000, "vie"), new SyncText(13500, " d'au"), new SyncText(14000, "tres"), new SyncText(14500, " choses") };
             SyncLyrics.Add(SyncLine);
-            SyncLine = new List<SyncText> { new SyncText(13500, "Aïe"), new SyncText(14000, " on"), new SyncText(14500, " nous"), new SyncText(15000, " fait"), new SyncText(15500, " croire") };
+            SyncLine = new List<SyncText> { new SyncText(13500, "Aïe"), new SyncText(15500, " on"), new SyncText(16000, " nous"), new SyncText(16500, " fait"), new SyncText(17500, " croire") };
             SyncLyrics.Add(SyncLine);
-            SyncLine = new List<SyncText> { new SyncText(16000, "Que"), new SyncText(16500, " le"), new SyncText(17000, " bon"), new SyncText(17500, "heur"), new SyncText(18000, " c'est"), new SyncText(18500, " d'a"), new SyncText(19000, "voir") };
+            SyncLine = new List<SyncText> { new SyncText(18500, "Que"), new SyncText(19000, " le"), new SyncText(19500, " bon"), new SyncText(20000, "heur"), new SyncText(20500, " c'est"), new SyncText(21000, " d'a"), new SyncText(21500, "voir") };
             SyncLyrics.Add(SyncLine);
 
             // Duration = last item of lyrics
             Duration = (int)SyncLyrics[SyncLyrics.Count - 1][SyncLine.Count - 1].time;
-
-            //List<SyncText> l = SyncLyrics[SyncLyrics.Count - 1];
-            //SyncText st = l[l.Count - 1];
-            //Duration = (int)st.time;
 
             trackBar1.Minimum = 0;
             trackBar1.Maximum = Duration;
@@ -59,7 +57,6 @@ namespace TestKaraokeEffect
             trackBar1.SmallChange = 1000;
             trackBar1.LargeChange = 1000;
             trackBar1.TickFrequency = 500;
-
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -69,8 +66,6 @@ namespace TestKaraokeEffect
             trackBar1.Value = trackBar1.Minimum;
             karaokeEffect1.Start();
             timer1.Start();
-
-
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -84,10 +79,7 @@ namespace TestKaraokeEffect
                 pauselengthms = DateTime.Now.Subtract(pausestart).Milliseconds;
                 start = start.AddMilliseconds(pauselengthms);
             }
-
         }
-
-
 
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -98,11 +90,9 @@ namespace TestKaraokeEffect
             if (ms <= trackBar1.Maximum)
                 trackBar1.Value = ms;
 
-            List<SyncText> l = SyncLyrics[SyncLyrics.Count - 1];
-            SyncText st = l[l.Count - 1];
-            if (ms > st.time)
+            
+            if (ms > Duration)
             {
-
                 timer1.Stop();
                 trackBar1.Value = trackBar1.Minimum;
                 karaokeEffect1.Stop();
@@ -110,8 +100,6 @@ namespace TestKaraokeEffect
             }
 
             karaokeEffect1.SetPos(ms);
-
-
         }
 
         private void button3_Click(object sender, EventArgs e)

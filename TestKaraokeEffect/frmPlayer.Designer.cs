@@ -107,8 +107,8 @@
             this.karaokeEffect1.Size = new System.Drawing.Size(689, 282);
             this.karaokeEffect1.StepPercent = 0.01F;
             this.karaokeEffect1.TabIndex = 2;
-            this.karaokeEffect1.TxtAlreadyPlayedColor = System.Drawing.Color.Green;
-            this.karaokeEffect1.TxtBeingPlayedColor = System.Drawing.Color.Red;
+            this.karaokeEffect1.TxtAlreadyPlayedColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(180)))), ((int)(((byte)(51)))));
+            this.karaokeEffect1.TxtBeingPlayedColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
             this.karaokeEffect1.TxtNotYetPlayedColor = System.Drawing.Color.White;
             // 
             // timer1

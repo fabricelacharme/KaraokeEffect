@@ -129,7 +129,7 @@ namespace lyrics
         }
 
         
-        private Color _AlreadyPlayedColor = Color.Green;
+        private Color _AlreadyPlayedColor = Color.FromArgb(153, 180, 51);  // Green
         [Description("Colour of text already played")]
         public Color TxtAlreadyPlayedColor
         {
@@ -141,7 +141,7 @@ namespace lyrics
             }
         }
 
-        private Color _BeingPlayedColor = Color.Red;
+        private Color _BeingPlayedColor = Color.FromArgb(238, 17, 17); // Red
         [Description("Colour of text being played")]
         public Color TxtBeingPlayedColor
         {
@@ -383,6 +383,9 @@ namespace lyrics
         #region Control Load Resize paint
         private void KaraokeEffect_Resize(object sender, EventArgs e)
         {
+            // Increase _steppercent if Width increase
+            _steppercent = _steppercent * Width/500;
+
             AjustText(_biggestLine);
             pBox.Invalidate();
         }
@@ -470,6 +473,8 @@ namespace lyrics
 
         #endregion Control Load Resize
 
+
+        #region Get infos
         /// <summary>
         /// Search for biggest line
         /// </summary>
@@ -493,6 +498,66 @@ namespace lyrics
             return maxline;
         }
 
+               
+      /// <summary>
+      /// Retrieve which line for pos
+      /// </summary>
+      /// <param name="pos"></param>
+      /// <returns></returns>
+        private int GetLine(int pos)
+        {
+            for (int i = 0; i < Lines.Count; i++)
+            {
+                if (pos < Times[i][Times[i].Count() - 1])
+                {
+                    return i;
+                }
+            }
+            return 0;
+        }
+
+
+        /// <summary>
+        /// Retrive index of current syllabe in the current line
+        /// </summary>
+        /// <returns></returns>       
+        private int GetIndex(int pos)
+        {
+            // For each line of lyrics
+            for (int j = 0; j < Lines.Count; j++)
+            {
+                // Search for which timespamp is greater than pos
+                for (int i = 0; i < Times[_line].Length; i++)
+                {
+                    if (pos < Times[_line][i])
+                    {
+                        return i + 1;
+                    }
+                }
+            }
+            return Lines.Count - 1;
+        }
+
+
+        /// <summary>
+        /// Mesure length of a portion of line
+        /// </summary>
+        /// <param name="idx"></param>
+        /// <returns></returns>
+        private float GetCurLength(int idx)
+        {
+            float res = 0;
+            for (int i = 0; i < idx; i++)
+            {                
+                res += MeasureString(Lines[_line][i], _karaokeFont.Size);
+            }
+            return res;
+        }
+
+        #endregion get infos
+
+
+        #region adjust text
         /// <summary>
         /// Ajust size of font regarding size of pictureBox1
         /// </summary>
@@ -502,14 +567,14 @@ namespace lyrics
             if (S != "" && pBox != null)
             {
                 Graphics g = pBox.CreateGraphics();
-                float femsize;                
+                float femsize;
                 long inisize = (long)_karaokeFont.Size;
                 femsize = g.DpiX * inisize / 72;
 
                 float textSize = MeasureString(S, femsize);
 
-                // Try to fit inside 95% of client size
-                long comp = (long)(0.95 * pBox.ClientSize.Width);
+                // Try to fit inside 90% of client size
+                long comp = (long)(0.90 * pBox.ClientSize.Width);
 
                 // Texte trop large
                 if (textSize > comp)
@@ -581,62 +646,6 @@ namespace lyrics
             }
         }
 
-        
-      /// <summary>
-      /// Retrieve which line for pos
-      /// </summary>
-      /// <param name="pos"></param>
-      /// <returns></returns>
-        private int GetLine(int pos)
-        {
-            for (int i = 0; i < Lines.Count; i++)
-            {
-                if (pos < Times[i][Times[i].Count() - 1])
-                {
-                    return i;
-                }
-            }
-            return 0;
-        }
-
-
-        /// <summary>
-        /// Retrive index of current syllabe in the current line
-        /// </summary>
-        /// <returns></returns>       
-        private int GetIndex(int pos)
-        {
-            // For each line of lyrics
-            for (int j = 0; j < Lines.Count; j++)
-            {
-                // Search for which timespamp is greater than pos
-                for (int i = 0; i < Times[_line].Length; i++)
-                {
-                    if (pos < Times[_line][i])
-                    {
-                        return i + 1;
-                    }
-                }
-            }
-            return Lines.Count - 1;
-        }
-
-
-        /// <summary>
-        /// Mesure length of a portion of line
-        /// </summary>
-        /// <param name="idx"></param>
-        /// <returns></returns>
-        private float GetCurLength(int idx)
-        {
-            float res = 0;
-            for (int i = 0; i < idx; i++)
-            {                
-                res += MeasureString(Lines[_line][i], _karaokeFont.Size);
-            }
-            return res;
-        }
-
         /// <summary>
         /// Center text vertically
         /// </summary>
@@ -644,7 +653,8 @@ namespace lyrics
         private int VCenterText()
         {
             // Height of control minus height of lines to show
-            int res = (pBox.ClientSize.Height - (_nbLyricsLines + 1) * _lineHeight) / 2;
+            //int res = (pBox.ClientSize.Height - (_nbLyricsLines + 1) * _lineHeight) / 2;
+            int res = (pBox.ClientSize.Height - (_nbLyricsLines) * _lineHeight) / 2;
             return res > 0 ? res : 0;
         }
 
@@ -657,8 +667,11 @@ namespace lyrics
         {            
             int res = -(int)_karaokeFont.Size / 2 + (pBox.ClientSize.Width - (int)MeasureString(s, _karaokeFont.Size)) / 2;
             return res > 0 ? res : 0;
-        }      
-        
+        }
+
+        #endregion ajust text
+
+
         private void SetPosition(int pos)
         {
             // line changed by trackbar            
