@@ -1,14 +1,15 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // Les informations générales relatives à un assembly dépendent de
 // l'ensemble d'attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
 // associées à un assembly.
-[assembly: AssemblyTitle("KaraokeEffect")]
+[assembly: AssemblyTitle("TestKaraokeEffect")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("KaraokeEffect")]
+[assembly: AssemblyProduct("TestKaraokeEffect")]
 [assembly: AssemblyCopyright("Copyright ©  2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Le GUID suivant est pour l'ID de la typelib si ce projet est exposé à COM
-[assembly: Guid("6d414dbf-73a0-4804-8c02-b50271b91357")]
+[assembly: Guid("99b591d2-2250-4734-b9ae-5c8ef00c8ac0")]
 
 // Les informations de version pour un assembly se composent des quatre valeurs suivantes :
 //

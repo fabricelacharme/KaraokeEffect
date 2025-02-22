@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace KaraokeEffect
+namespace TestKaraokeEffect
 {
     internal static class Program
     {
@@ -11,9 +14,9 @@ namespace KaraokeEffect
         [STAThread]
         static void Main()
         {
-            Application.SetCompatibleTextRenderingDefault(false); // FAB
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);            
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new frmPlayer());
         }
     }
 }

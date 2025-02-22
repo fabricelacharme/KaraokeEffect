@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using lyrics;
-using static System.Windows.Forms.LinkLabel;
 
-namespace KaraokeEffect
+namespace TestKaraokeEffect
 {
     public partial class frmPlayer : Form
-    {                       
+    {
         List<SyncText> SyncLine = new List<SyncText>();
-        List<List<SyncText>> SyncLyrics = new List<List<SyncText>>();               
-        
+        List<List<SyncText>> SyncLyrics = new List<List<SyncText>>();
+
         DateTime start;
         DateTime pausestart;
         DateTime pauselength;
@@ -27,13 +26,13 @@ namespace KaraokeEffect
             Init();
 
             karaokeEffect1.nbLyricsLines = 3;
-            karaokeEffect1.StepPercent = 0.01F;            
+            karaokeEffect1.StepPercent = 0.01F;
             karaokeEffect1.SyncLyrics = SyncLyrics;
         }
 
 
         private void Init()
-        {                        
+        {
             SyncLine = new List<SyncText> { new SyncText(0, "Oh"), new SyncText(500, " la"), new SyncText(1000, " la"), new SyncText(1500, " la"), new SyncText(2000, " vie"), new SyncText(2500, " en"), new SyncText(3000, " rose") };
             SyncLyrics.Add(SyncLine);
             SyncLine = new List<SyncText> { new SyncText(3500, "Le"), new SyncText(4000, " rose"), new SyncText(4500, " qu'on"), new SyncText(5000, " nous"), new SyncText(5500, " pro"), new SyncText(6000, "pose") };
@@ -68,7 +67,7 @@ namespace KaraokeEffect
             karaokeEffect1.Start();
             timer1.Start();
 
-            
+
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -82,15 +81,15 @@ namespace KaraokeEffect
                 pauselengthms = DateTime.Now.Subtract(pausestart).Milliseconds;
                 start = start.AddMilliseconds(pauselengthms);
             }
-                       
+
         }
 
-       
+
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (paused) return;
-            
+
             int ms = (int)DateTime.Now.Subtract(start).TotalMilliseconds;
 
             if (ms <= trackBar1.Maximum)
@@ -100,7 +99,7 @@ namespace KaraokeEffect
             SyncText st = l[l.Count - 1];
             if (ms > st.time)
             {
-                
+
                 timer1.Stop();
                 trackBar1.Value = trackBar1.Minimum;
                 karaokeEffect1.Stop();
@@ -108,8 +107,8 @@ namespace KaraokeEffect
             }
 
             karaokeEffect1.SetPos(ms);
-             
-            
+
+
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -126,3 +125,4 @@ namespace KaraokeEffect
         }
     }
 }
+

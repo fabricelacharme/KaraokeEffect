@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.LinkLabel;
 
 namespace lyrics
 {
@@ -166,13 +160,11 @@ namespace lyrics
             SyncLyrics = new List<List<SyncText>>();
             SyncLine = new List<SyncText> { new SyncText(0, "Hello"), new SyncText(500, " World") };                        
             SyncLyrics.Add(SyncLine);
-            /*
-            SyncLine = new List<SyncText> { new SyncText(1000, "***"), new SyncText(1500, " ***") };
-            SyncLyrics.Add(SyncLine);
-            SyncLine = new List<SyncText> { new SyncText(2000, "*") };
-            SyncLyrics.Add(SyncLine);
-            */
-        }
+
+            _nbLyricsLines = 1;
+
+
+         }
 
 
         private void Init()
@@ -201,6 +193,9 @@ namespace lyrics
                           
             
             _lines = Lines.Count;
+            if (_lines < _nbLyricsLines) 
+                _nbLyricsLines = _lines;
+
             
             string[] line;
             string Tx;

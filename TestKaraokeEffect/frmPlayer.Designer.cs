@@ -1,4 +1,4 @@
-﻿namespace KaraokeEffect
+﻿namespace TestKaraokeEffect
 {
     partial class frmPlayer
     {
@@ -121,6 +121,7 @@
             this.Controls.Add(this.karaokeEffect1);
             this.Controls.Add(this.panel1);
             this.Name = "frmPlayer";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmPlayer";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -140,3 +141,4 @@
         private System.Windows.Forms.TrackBar trackBar1;
     }
 }
+
