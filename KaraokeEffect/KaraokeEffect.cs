@@ -10,6 +10,13 @@ using System.Windows.Forms;
 namespace lyrics
 {
 
+    public enum TransitionEffects
+    {
+        None,
+        Progressive,
+    }
+
+
     public struct SyncText
     {
         public long time;
@@ -57,6 +64,14 @@ namespace lyrics
 
 
         #region properties
+        
+        private TransitionEffects _transitionEffect;
+        public TransitionEffects TransitionEffect 
+        { 
+            get { return _transitionEffect; } 
+            set { _transitionEffect = value; }
+        }
+        
         
         private int _position = 0;
         /// <summary>
@@ -226,6 +241,7 @@ namespace lyrics
 
             _nbLyricsLines = 1;
 
+            _transitionEffect = TransitionEffects.Progressive;
 
          }
 
@@ -776,10 +792,20 @@ namespace lyrics
 
                 percent = (lastCurLength / LinesLengths[_line]);
 
+
+
                 // Caculate distance between LastCurLength et CurLength
-                float d = (float) (CurLength - lastCurLength);
-                // Set 3000 occurences to reach the end 
-                _steppercent = d / 3000;
+                float d = (float)(CurLength - lastCurLength);
+                if (_transitionEffect == TransitionEffects.None)
+                {
+                    _steppercent = d;
+                }
+                else if (_transitionEffect == TransitionEffects.Progressive)
+                {
+                    
+                    // Set 3000 occurences to reach the end 
+                    _steppercent = d / 3000;
+                }
                 
 
                 lastCurLength = CurLength;

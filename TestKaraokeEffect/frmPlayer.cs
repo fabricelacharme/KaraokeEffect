@@ -27,9 +27,12 @@ namespace TestKaraokeEffect
 
             timer1.Interval = 10;
 
-            karaokeEffect1.nbLyricsLines = 3;
-            //karaokeEffect1.StepPercent = 0.01F;
+            karaokeEffect1.TransitionEffect = TransitionEffects.None;
+            karaokeEffect1.nbLyricsLines = 3;            
             karaokeEffect1.SyncLyrics = SyncLyrics;
+            
+            
+            
         }
 
 
