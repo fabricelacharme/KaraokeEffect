@@ -52,7 +52,7 @@ namespace TestKaraokeEffect
             SyncLyrics.Add(SyncLine);
 
             // Duration = last item of lyrics
-            Duration = (int)SyncLyrics[SyncLyrics.Count - 1][SyncLine.Count - 1].time;
+            Duration = (int)SyncLyrics[SyncLyrics.Count - 1][SyncLine.Count - 1].Time;
 
             trackBar1.Minimum = 0;
             trackBar1.Maximum = Duration;

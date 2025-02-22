@@ -16,16 +16,16 @@ namespace lyrics
         Progressive,
     }
 
-
+    [Serializable()]
     public struct SyncText
     {
-        public long time;
-        public string lyric;
+        public long Time { get; set; }
+        public string Text { get; set; }
 
-        public SyncText(long time, string lyric)
+        public SyncText(long time, string text)
         {
-            this.time = time;
-            this.lyric = lyric;
+            this.Time = time;
+            this.Text = text;
         }
     }
 
@@ -263,8 +263,8 @@ namespace lyrics
 
                 for (int j = 0; j < syncline.Count; j++ )
                 {
-                    t[j] = syncline[j].time;
-                    s[j] = syncline[j].lyric;
+                    t[j] = syncline[j].Time;
+                    s[j] = syncline[j].Text;
                 }
                 Times.Add(t);
                 Lines.Add(s);                
