@@ -52,8 +52,10 @@ namespace lyrics
 
         private StringFormat sf;
 
-        private int _FirstLine = 0;
-        private int _LastLine = 0;
+        private int _FirstLineToShow = 0;
+        private int _LastLineToShow = 0;
+
+        private int _lastLine = -1;
         private int _line = 0;
         private int _lines = 0;
         private int _lineHeight = 0;
@@ -297,7 +299,7 @@ namespace lyrics
             _biggestLine = GetBiggestLine();
             AjustText(_biggestLine);
 
-            _LastLine = SetLastLineToShow(_FirstLine, _lines, _nbLyricsLines);
+            _LastLineToShow = SetLastLineToShow(_FirstLineToShow, _lines, _nbLyricsLines);
 
         }
 
@@ -423,10 +425,10 @@ namespace lyrics
             // ======================================================================================================
             var otherpath = new GraphicsPath();
 
-            for (int i = _FirstLine; i <= _LastLine; i++)
+            for (int i = _FirstLineToShow; i <= _LastLineToShow; i++)
             {
                 x0 = HCenterText(Texts[i]);     // Center horizontally
-                otherpath.AddString(Texts[i], _karaokeFont.FontFamily, (int)_karaokeFont.Style, _karaokeFont.Size, new Point(x0, y0 + (i - _FirstLine) * _lineHeight), StringFormat.GenericDefault);
+                otherpath.AddString(Texts[i], _karaokeFont.FontFamily, (int)_karaokeFont.Style, _karaokeFont.Size, new Point(x0, y0 + (i - _FirstLineToShow) * _lineHeight), StringFormat.GenericDefault);
             }
             e.Graphics.FillPath(new SolidBrush(Color.White), otherpath);
 
@@ -443,8 +445,8 @@ namespace lyrics
             var path = new GraphicsPath();
 
             // Add the full text line to the graphical path            
-            x0 = HCenterText(Texts[_FirstLine]);      // Center horizontally
-            path.AddString(Texts[_FirstLine], _karaokeFont.FontFamily, (int)_karaokeFont.Style, _karaokeFont.Size, new Point(x0, y0), StringFormat.GenericDefault);
+            x0 = HCenterText(Texts[_FirstLineToShow]);      // Center horizontally
+            path.AddString(Texts[_FirstLineToShow], _karaokeFont.FontFamily, (int)_karaokeFont.Style, _karaokeFont.Size, new Point(x0, y0), StringFormat.GenericDefault);
 
             // Fill graphical path in white => full text is white
             e.Graphics.FillPath(new SolidBrush(Color.White), path);
@@ -522,6 +524,7 @@ namespace lyrics
       /// <returns></returns>
         private int GetLine(int pos)
         {
+            /*
             for (int i = 0; i < Lines.Count; i++)
             {
                 if (pos < Times[i][Times[i].Count() - 1])
@@ -530,29 +533,67 @@ namespace lyrics
                 }
             }
             return 0;
-        }
+            */
+            /*
+            for (int i = 0; i < Lines.Count; i++)
+            {
+                if (pos >= Times[i][0])
+                {
+                    return i;
+                }
+            }
+            return 0;
+            */
 
-
-        /// <summary>
-        /// Retrive index of current syllabe in the current line
-        /// </summary>
-        /// <returns></returns>       
-        private int GetIndex(int pos)
-        {
-            // For each line of lyrics
             for (int j = 0; j < Lines.Count; j++)
             {
                 // Search for which timespamp is greater than pos
-                for (int i = 0; i < Times[_line].Length; i++)
+                for (int i = 0; i < Times[j].Length; i++)
                 {
-                    if (pos < Times[_line][i])
+                    if (pos < Times[j][i])
                     {
-                        //return i + 1;
-                        return i;
+                        return j;
                     }
                 }
             }
             return Lines.Count - 1;
+
+            /*
+            for (int i = Lines.Count -1; i >= 0; i--)
+            {
+                if (pos >= Times[i][0])
+                {
+                    return i;
+                }
+
+            }
+            return 0;
+            */
+        }
+
+
+        /// <summary>
+        /// Retrieve index of current syllabe in the current line
+        /// </summary>
+        /// <returns></returns>       
+        private int GetIndex(int pos)
+        {
+          
+            
+            for (int j = Lines.Count - 1; j >= 0; j--)
+            {
+                for (int i = Times[j].Length - 1; i >= 0; i--)
+                {
+                    if (Times[j][i] > 0 && pos > Times[j][i])
+                    {                        
+                        _line = j;
+                        return i + 1;
+                    }
+                }
+            }
+            
+            return 0;
+            
         }
 
 
@@ -566,7 +607,8 @@ namespace lyrics
             float res = 0;
             for (int i = 0; i < idx; i++)
             {                
-                res += MeasureString(Lines[_line][i], _karaokeFont.Size);
+                if (i < Lines[_line].Count())                
+                    res += MeasureString(Lines[_line][i], _karaokeFont.Size);
             }
             return res;
         }
@@ -688,10 +730,7 @@ namespace lyrics
 
         #endregion ajust text
 
-
-     
-                      
-
+                          
         #region start stop
 
         // Start Display lyrics
@@ -710,8 +749,8 @@ namespace lyrics
         public void Stop()
         {
             _line = 0;
-            _FirstLine = 0;
-            _LastLine = SetLastLineToShow(_FirstLine, _lines, _nbLyricsLines);
+            _FirstLineToShow = 0;
+            _LastLineToShow = SetLastLineToShow(_FirstLineToShow, _lines, _nbLyricsLines);
 
             percent = 0;
             lastpercent = 0;
@@ -734,6 +773,7 @@ namespace lyrics
 
         private void SetPosition(int pos)
         {
+            /*
             // line changed by trackbar            
             int line = GetLine(pos);
 
@@ -750,16 +790,16 @@ namespace lyrics
                     lastCurLength = 0;
                     CurLength = 0;
                     _line = GetLine(pos);
-                    _FirstLine = _line;
-                    _LastLine = SetLastLineToShow(_FirstLine, _lines, _nbLyricsLines);
+                    _FirstLineToShow = _line;
+                    _LastLineToShow = SetLastLineToShow(_FirstLineToShow, _lines, _nbLyricsLines);
                 }
                 else
                 {
                     // Is it the end of the text to display?
                     //Console.WriteLine("*** END");                    
                     _line = 0;
-                    _FirstLine = 0;
-                    _LastLine = SetLastLineToShow(_FirstLine, _lines, _nbLyricsLines);
+                    _FirstLineToShow = 0;
+                    _LastLineToShow = SetLastLineToShow(_FirstLineToShow, _lines, _nbLyricsLines);
 
                     percent = 0;
                     lastpercent = 0;
@@ -770,8 +810,9 @@ namespace lyrics
                     pBox.Invalidate();
                     return;
                 }
-
             }
+            */
+
 
             // Search index of lyric to play
             index = GetIndex(pos);
@@ -780,8 +821,29 @@ namespace lyrics
             CurLength = GetCurLength(index);
 
             // New word to highlight
-            if (index != lastindex)
+            // Warning: in cas of full lines, idex is always the same and not different than lastIndex
+            if (index != lastindex || _line != _lastLine)
             {
+                                
+                if (_line !=  _lastLine)
+                {
+                    _lastLine = _line;
+                    percent = 0;
+                    lastpercent = 0;
+                    index = 0;
+                    lastindex = -1;
+                    lastCurLength = 0;
+                    CurLength = 0;
+                }
+                
+                _FirstLineToShow = _line;
+                _LastLineToShow = SetLastLineToShow(_FirstLineToShow, _lines, _nbLyricsLines);
+
+
+                //Console.WriteLine("test Line : " + line);
+                Console.WriteLine("Line : " + _line + " - index : " + index);
+
+                
                 // Save last value of percent
                 lastpercent = percent;
 
